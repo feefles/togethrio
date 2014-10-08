@@ -5,6 +5,10 @@ from pymongo import MongoClient
 # app.config['MONGO_DBNAME'] = 'togethrdb'
 # mongo = PyMongo(app)
 
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
+
 app.config['db_username'] = "feefles"
 app.config['db_password'] = "togethr2013"
 
