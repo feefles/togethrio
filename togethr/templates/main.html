@@ -139,7 +139,7 @@
 $(function() {
 
     $("#workspaces_view_btn").bind("click", function() {
-        session.disconnect();
+        // session.disconnect();
         $("#sidebar2").addClass("invisible");
         $("#sidebar1").fadeIn(300);
         $(".workspaces-list-item").removeClass("clicked");
@@ -163,7 +163,6 @@ $(function() {
         });
         // included_contacts = included_contacts.substr(1);
         included_contacts = $('.nwc_item').val();
-        debugger
         $.ajax({
             url: "/createWorkspace/",
             method: "GET",

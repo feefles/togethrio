@@ -8,12 +8,12 @@ from bson import ObjectId
 @app.route("/getContacts/", methods = ['POST'])
 def getContacts():
 	user = session['username']
-	self = mongo.db.users.find({'name': user})
+	self = mongo.users.find({'name': user})
 	friends = self[0]['friends']
 
 	friendInfo = {}
 	if friends:
-		friendCursor = mongo.db.users.find({'_id': { '$in' : friends } }).sort("timestamp", -1)
+		friendCursor = mongo.users.find({'_id': { '$in' : friends } }).sort("timestamp", -1)
 	 	for friend in friendCursor:
 			if friend['name'].lower() == user.lower():
 				continue
@@ -25,7 +25,7 @@ def findContacts():
 	user = session['username']
 	friend = request.form['input'].lower()
 
-	f = mongo.db.users.find({'name_lower': {"$regex": re.compile(friend, re.IGNORECASE)}})
+	f = mongo.users.find({'name_lower': {"$regex": re.compile(friend, re.IGNORECASE)}})
 	flist = ""
 	for contact in f:
 		if contact['name'].lower() == user.lower():
@@ -39,20 +39,20 @@ def findContacts():
 @app.route("/addContact/", methods = ['POST'])
 def addContact():
 	user = session['username']
-	self = mongo.db.users.find_one({'name':user})
+	self = mongo.users.find_one({'name':user})
 	newContact = request.form['contact'].lower()
-	f = mongo.db.users.find_one({'name_lower': newContact})
+	f = mongo.users.find_one({'name_lower': newContact})
 	if not(f == None):
-		current_friends = mongo.db.users.find_one({'name': user})
+		current_friends = mongo.users.find_one({'name': user})
 		if current_friends != None:
 			current_friends = current_friends['friends']
 		else:
 			current_friends = []
 		if f['_id'] not in current_friends and f['_id'] != self['_id']:
 			# Add the contact to the current user's list of contacts
-			mongo.db.users.update({'name': user}, { '$push': {'friends': f['_id']} })
+			mongo.users.update({'name': user}, { '$push': {'friends': f['_id']} })
 			# Add the current user to the new contact's list of contacts
-			mongo.db.users.update({'_id': f['_id']}, { '$push': {'friends': self['_id']} })
+			mongo.users.update({'_id': f['_id']}, { '$push': {'friends': self['_id']} })
 			# Return info
 			friendInfo = {}
 			friendInfo[f['name']] = userIsOnline(f['timestamp'])
@@ -67,7 +67,7 @@ def addContact():
 
 @app.route("/updateTimestamp/", methods = ['POST'])
 def updateTimestamp():
-	mongo.db.users.update({'name_lower': session['username'].lower()}, { '$set': { 'timestamp': time.time() } })
+	mongo.users.update({'name_lower': session['username'].lower()}, { '$set': { 'timestamp': time.time() } })
 	return "done"
 
 # A method for detecting if a user's status should be considered "online"

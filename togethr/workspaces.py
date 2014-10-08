@@ -17,7 +17,7 @@ def createWorkspace():
 	users = request.args['users'].split(",");
 	users.append(session['username'])
 	timestamp = time.time()
-	results = mongo.db.workspaces.insert({'name':workspaceName, 'users': users, 
+	results = mongo.workspaces.insert({'name':workspaceName, 'users': users, 
 								# 'session_id': session_id,
 								'timestamp': timestamp})
 	workspaces_results = {}
@@ -27,7 +27,7 @@ def createWorkspace():
 @app.route("/getWorkspaces/", methods= ['POST'])
 def getWorkspaces():
 	self = session['username']
-	workspaces = mongo.db.workspaces.find({'users': { '$in' : [self]}, 'timestamp': {'$gt': int(round(float(request.form['last_time']))) + 1}})
+	workspaces = mongo.workspaces.find({'users': { '$in' : [self]}, 'timestamp': {'$gt': int(round(float(request.form['last_time']))) + 1}})
 	workspaces_results = {}
 	last_time = int(round(float(request.form['last_time']))) + 1
 	for workspace in workspaces:
@@ -38,15 +38,15 @@ def getWorkspaces():
 @app.route("/addUserToWorkspace/", methods= ['POST'])
 def addUserToWorkspace():
 	u = request.form['contact']
-	user = mongo.db.users.find_one({'name':u})
+	user = mongo.users.find_one({'name':u})
 	workspace_id = "hi"
-	mongo.db.workspaces.update({'workspace_id':workspace_id}, { '$push': {'users' : user['name']}})
+	mongo.workspaces.update({'workspace_id':workspace_id}, { '$push': {'users' : user['name']}})
 	return 'success'
 
 @app.route("/loadWorkspaces/", methods = ['POST'])
 def loadWorkspaces():
 	workspaceId = ObjectId(request.form['workspace_id'])
-	f = mongo.db.items.find({'workspace_id': workspaceId, 'timestamp': {'$gt': int(round(float(request.form['last_time']))) + 1}}).sort("timestamp", 1)
+	f = mongo.items.find({'workspace_id': workspaceId, 'timestamp': {'$gt': int(round(float(request.form['last_time']))) + 1}}).sort("timestamp", 1)
 	content = ""
 	last_time = int(round(float(request.form['last_time']))) + 1
 	for item in f:
@@ -66,7 +66,7 @@ def addContent():
 	workspace_id = ObjectId(request.form['workspace_id'])
 	content = request.form['content']
 	timestamp = time.time()
-	mongo.db.items.insert({'workspace_id': workspace_id, 'content': content, 
+	mongo.items.insert({'workspace_id': workspace_id, 'content': content, 
 							'creator': self, 'timestamp': timestamp})
 	item = {}
 	item['content'] = content

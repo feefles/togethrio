@@ -20,7 +20,7 @@ def auth():
 		return jsonify(errors = 'pass_none')
 
 	# Find the user
-	u = mongo.db.users.find_one({'name_lower': entered_user.lower()})
+	u = mongo.users.find_one({'name_lower': entered_user.lower()})
 	if not(u == None):
 		# The user was found, so continue
 		if u['password'] == bcrypt.hashpw(entered_password, u['password']):
@@ -47,7 +47,7 @@ def create():
 		return jsonify(errors = 'username_none')
 
 	# Make sure this isn't a duplicate username -- THIS DOES NOT YET WORK *cough* PyMongo *cough*
-	name_exists = mongo.db.users.find_one({'name_lower': username.lower()})
+	name_exists = mongo.users.find_one({'name_lower': username.lower()})
 	if not(name_exists == None):
 		# The desired username is taken
 		return jsonify(errors = 'username_taken')
@@ -60,7 +60,7 @@ def create():
 	if pw1 == pw2:
 		# Hash a password for the first time, with a randomly-generated salt
 		hashed_password = bcrypt.hashpw(pw1, bcrypt.gensalt(12))
-		user_id = mongo.db.users.insert({'name' : username,
+		user_id = mongo.users.insert({'name' : username,
 								'name_lower': username.lower(),
 								'password': hashed_password,
 								'friends': [],
