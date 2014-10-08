@@ -7,4 +7,4 @@ pymongo==2.7.2
 requests==2.3.0
 wsgiref==0.1.2
 Flask-Bcrypt==0.6.0
-opentok>=2.2.1
+opentok==2.2.1
