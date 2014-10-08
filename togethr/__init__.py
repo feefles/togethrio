@@ -7,6 +7,7 @@ from pymongo import MongoClient
 
 app.config['db_username'] = "feefles"
 app.config['db_password'] = "togethr2013"
+app.config['filepicker_key'] = 'AXNyGpWFWQtCCrNfz8JhAz'
 
 server = 'linus.mongohq.com'
 port = 10040
