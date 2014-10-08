@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Togethr.io</title>
+    
+    <link href="https://s3.amazonaws.com/Togethr.io/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="static/css/styles.css" rel="stylesheet" media="screen">
+    <link href="static/css/font-awesome.css" rel="stylesheet">
+    <script src="static/js/TB.js" ></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+
+    <div class="navigation-container">
+        <div class="navigationbar">
+            <div class="nav-item nav-center">
+            togethr<span class="font100">.io</span>
+            </div>
+            <div class="nav-name">
+            Logged in as <span id="username_navbar">{{user}}</span>
+            </div>
+            <div class="nav-item nav-logout" id="log_out">
+            <a href="#" >Logout</a>
+            </div>
+        </div>
+        <div class="nav-footer">
+          <div class="nav-footer-left"></div>
+        </div>
+    </div>
+
+	<div id="workspaces-new-invites" style="position: absolute;z-index: 2000;top: 25px;width: 630px;left: 32%;">
+
+	</div>
+
+    <div class="modal" id="createWorkspace" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Create a new workspace</h4>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="create_workspace_textbox" class="form-control" placeholder="Workspace Name" style="margin-bottom:20px;">
+          <ul class="list-group inputs-list">
+          <p class="lead">Who's in this workspace?</p>
+		  <div id="new_workspace_contacts">
+
+		  </div>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="create_workspace_submit">Create!</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+    <div class="body-container">
+            
+        <div class="body-content-container">
+        
+			<div id="no_stuff_here" style="display: none;text-align: center;opacity: 0.4;padding-top: 3%;">
+				<div style="font-size: 60px;">There's nothing here yet . . .</div>
+				<div style="font-size: 300px;"><i class="icon-file-alt"></i></div>
+			</div>
+        	<div id="workspace_panels" data-last_time="0" style="display: none;">
+
+            </div>
+			<div id="no_stuff_here2" style="text-align: center;opacity: 0.4;padding-top: 3%;">
+					<div style="font-size: 60px;">Click on a workspace on the right to begin</div>
+					<div style="font-size: 300px;"><i class="icon-file-alt"></i></div>
+			</div>
+            <div id="submit_content_div" style="display: none;">
+		    	<textarea class="form-control input-lg" id="submit_content_input" placeholder="Write a message . . ."></textarea>
+		    </div>  
+        </div>
+    
+    </div>
+    
+    <div class="sidebar-container" >
+    <div id="sidebar1" style="min-height:90%;">
+    <button id="create-workspace-btn" data-toggle="modal" href="#createWorkspace" class="btn btn-lg btn-danger"><i class="icon-plus"></i> Create Workspace </button>
+    	<b> Your workspaces <i class="icon-comments-alt"></i> </b>
+		<div id="workspaces-div" data-last_time="0">
+         <ul class="list-group" id="workspaces-list">
+
+		 </ul>
+		</div>
+
+        <b>Your contacts <i class="icon-group"></i> </b>
+        
+        <div class="input-group input-group-sm" style="margin-top:6px;" id="search_box">
+      <input type="text" class="form-control" id="search_box_input" placeholder="Find and add a contact">
+      <button class="input-group-addon" id="add-contact-submit"><i class="icon-ok"></i></button>
+    </div>
+          <div style="position:relative;top: -15px;">
+        <div id="find_contacts_results" style="display: none;">
+
+        </div>
+      </div>
+
+    <div id="contacts-div">
+        <ul class="list-group" id="contacts-list">
+
+		</ul>
+		</div>
+    </div>
+    <div id="sidebar2" class="invisible">
+    <button class="btn btn-warning" id="workspaces_view_btn"> Exit Workspace</button>
+    <div id="tokbox_container">
+
+    </div>
+    </div>
+
+    </div>
+
+    </div>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+<script src="https://s3.amazonaws.com/Togethr.io/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/js/jquery.autocomplete.js"></script>
+<script>
+$(function() {
+
+    $("#workspaces_view_btn").bind("click", function(){
+      session.disconnect();
+      $("#sidebar2").addClass("invisible");
+      $("#sidebar1").fadeIn(300);
+      $(".workspaces-list-item").removeClass("clicked");
+      $("#submit_content_div").hide();
+      $("#workspace_panels").html('');
+      $("#workspace_panels").hide();
+    });
+
+    $(document).on('click', '.workspaces-list-item', function(){
+      firstShowSidebar2($(this).data('workspace-id'));
+      $("#sidebar1").hide();
+      $("#sidebar2").removeClass("invisible");
+    });
+
+    $("#create_workspace_submit").bind('click', function(){
+		var included_contacts = '';
+		$('.nwc_item').each(function() {
+			if ($(this).data('clicked') == 1)
+			{
+				included_contacts = included_contacts + "," + $(this).data('name');
+			}
+		});
+		included_contacts = included_contacts.substr(1);
+
+      $.ajax({
+        url: "/createWorkspace/",
+        method: "POST",
+        data : {workspaceName: $("#create_workspace_textbox").val(), users:included_contacts}
+      }).done(function(data){
+        $('#createWorkspace').modal('hide');
+        jQuery.each(data.result,function(key,value){
+          $("<li><a href='#' data-workspace-id='"+value+"' class='list-group-item workspaces-list-item' data-selected='0'>"+key+"</a></li>").hide().appendTo("#workspaces-list").fadeIn("fast");
+        });
+		$('#workspaces-div').data('last_time', data.last_time + 1);
+		$("#create_workspace_textbox").val('');
+      });
+    });
+
+	var updateWorkspaceContentTimer;
+
+	$(document).on('click', '.workspaces-list-item, .workspaces-notif-box', function() {
+		$('.workspaces-list-item').data('selected', 0).removeClass('clicked');
+		if ($(this).hasClass('workspaces-notif-box'))
+		{
+			$('#wli' + $(this).data('wli')).data('selected', 1).addClass('clicked');
+		}
+		else
+		{
+			$(this).data('selected', 1).addClass('clicked');
+		}
+      firstShowSidebar2($(this).data('workspace-id'));
+      $("#sidebar1").hide();
+      $("#sidebar2").removeClass("invisible");
+		var wid = $(this).data('workspace-id');
+		// Change and reset some global data
+		$(document).data('active_workspace', wid.$oid);
+		$('#workspace_panels').html('').data('last_time', 0);
+		$('#no_stuff_here').hide();
+		$('#no_stuff_here2').hide();
+		// Prevent recursive requests from building up exponentially
+		if (updateWorkspaceContentTimer)
+		{
+			clearTimeout(updateWorkspaceContentTimer);
+		}
+		// Load in the workspace's content
+		$('#submit_content_div').fadeIn('fast');
+		updateWorkspaceContent(true, wid.$oid, true);
+	});
+
+    $('#log_out').bind('click', function() {
+      $.ajax({
+      url: "/logout/",
+      method: 'POST', 
+      data : {}
+    }).done(function(data) {
+    	if(data=="success"){
+    		location.reload();
+    	}
+      });
+    });
+
+    $('#add-contact-submit').bind('click', function() {
+
+      $.ajax({
+        url:"/addContact/",
+        method: "POST",
+        data: {contact: $('#search_box_input').val()}
+      }).done(function(data) {
+		if (data.success)
+		{
+			jQuery.each(data.success, function(key, value) {
+				var display = '';
+				if (value == false)
+				{
+					var display = ' style="display: none;"';
+				}
+				$(' \
+						   <a href="#" class="list-group-item"> \
+							  <span><i class="icon-circle pull-right"' + display + '></i></span> \
+							  <span>' + key + '</span> \
+						   </a> \
+				').hide().prependTo("#contacts-list").fadeIn('medium');
+			});
+			$('#search_box_input').val('');
+			getModalContacts();
+		}
+      });
+    });
+
+  $(document).on('click', '.fsearch_elem', function() {
+	  var name = $(this).text();
+      $('#search_box_input').val(name);
+	  $("#find_contacts_results").hide().html('');
+  });
+  $('#search_box_input').on('input', function(){
+    $.ajax({
+        url:"/findContacts/",
+        method: "POST", 
+        data: {input:$('#search_box_input').val()}
+    }).done(function(data) {
+		if (data == '' || $('#search_box_input').val() == '')
+		{
+			$("#find_contacts_results").hide();
+		}
+		else
+		{
+			$("#find_contacts_results").html('');
+			var resultsList = data.split(",");
+			for (var i = 0; i < resultsList.length; i++)
+			{
+				$("#find_contacts_results").append("<div class='fsearch_elem'>" + resultsList[i] + "</div>");
+			}
+			$("#find_contacts_results").show()
+		}
+  });
+  });
+
+		$(document).on('click', '.nwc_item', function() {
+			if ($(this).data('clicked') == 1)
+			{
+				$(this).data('clicked', 0);
+				$(this).removeClass('clicked');
+				$(this).find('i').hide();
+			}
+			else
+			{
+				$(this).data('clicked', 1);
+				$(this).addClass('clicked');
+				$(this).find('i').show();
+			}
+		});
+		
+		$(document).on('click', '.invite_box', function() {
+			$(this).hide();
+		});
+
+		updateUserTimestamp(true);
+		updateContactsList(true);
+		updateWorkspacesList(true, true);
+		getModalContacts();
+
+  $('#submit_content_input').keypress(function(event) { 
+    if( event.keyCode == 13 && !event.shiftKey) {
+      $.ajax({
+        url:"/addContent/",
+        method:'POST',
+        data:{workspace_id: $(document).data('active_workspace'), content:$('#submit_content_input').val()}
+      }).done( function(data) {
+	    $('#workspace_panels').show().data('last_time', data.last_time);
+		$(data.output).hide().appendTo('#workspace_panels').fadeIn('fast');
+    $("#workspace_panels").scrollTop($("#workspace_panels")[0].scrollHeight);
+        $('#submit_content_input').val("");
+		$('#no_stuff_here').hide();
+       });
+     }
+  });
+  
+});
+
+   function updateUserTimestamp(recursively)
+   {
+		$.ajax({
+			url: "/updateTimestamp/",
+			method: 'POST',
+			data: {}
+		}).done(function(data) {
+			if (recursively)
+			{
+				setTimeout(function() {
+					updateUserTimestamp(true);
+				}, 4000);
+			}
+		});
+   }
+
+   function updateWorkspacesList(recursively, firstLoad)
+   {
+		$.ajax({
+		  url: "/getWorkspaces/",
+		  method: "POST",
+		  data : {last_time: $('#workspaces-div').data('last_time')}
+		}).done(function(data){
+		    jQuery.each(data.result,function(key,value){
+			  var randomnumber = Math.floor(Math.random()*11000);
+			  $("<li><a href='#' id='wli" + randomnumber + "' data-workspace-id='"+value+"' class='list-group-item workspaces-list-item' data-selected='0'>"+key+"</a></li>").hide().appendTo("#workspaces-list").fadeIn("fast");
+			  if (!firstLoad)
+			  {
+					$("<div class='invite_box workspaces-notif-box' data-workspace-id='"+value+"' data-wli='" + randomnumber + "'><i class='icon-bullhorn' style='padding-right: 10px;font-size: 1.2em;'></i>You've been invited to join <strong style='font-size: 1.1em;'>" + key + "</strong>! Click here to join.</div>").hide().appendTo("#workspaces-new-invites").fadeIn("fast").delay('10000').fadeOut('slow');
+			  }
+			else {
+			$("#workspace_panels").scrollTop($("#workspace_panels")[0].scrollHeight);
+}
+
+		    });
+			$('#workspaces-div').data('last_time', data.last_time);
+			if (recursively)
+			{
+				setTimeout(function() {
+					updateWorkspacesList(true, false);
+				}, 4000);
+			}
+		});
+   }
+
+   function updateContactsList(recursively)
+   {
+		$.ajax({
+			url: "/getContacts/",
+			method: 'POST',
+			dataType: 'json',
+			data: {}
+		}).done(function(data) {
+			$('#contacts-list').html('');
+			jQuery.each(data.result, function(key, value) {
+				var display = '';
+				if (value == false)
+				{
+					var display = ' style="display: none;"';
+				}
+				$('#contacts-list').append(' \
+				   <a href="#" class="list-group-item"> \
+					  <span><i class="icon-circle pull-right"' + display + '></i></span> \
+					  <span>' + key + '</span> \
+				   </a>');
+			});
+			if (recursively)
+			{
+				setTimeout(function() {
+					updateContactsList(true);
+				}, 4000);
+			}
+		});
+   }
+   
+   function updateWorkspaceContent(recursively, wid, firstLoad)
+   {
+		if ($(document).data('active_workspace') == wid)
+		{
+			// Load in the workspace's content
+			$.ajax({
+				url: "/loadWorkspaces/",
+				method: "POST",
+				dataType: 'json',
+				data : {workspace_id: wid, last_time: $('#workspace_panels').data('last_time'), first_load: firstLoad}
+			}).done(function(data){
+				$(data.output).hide().appendTo('#workspace_panels').fadeIn('fast');
+				$('#workspace_panels').data('last_time', data.last_time);
+				if (firstLoad && data.output == '')
+				{
+					$('#no_stuff_here').fadeIn('fast');
+					$('#workspace_panels').hide();
+				}
+				if (!$('#no_stuff_here').is(':visible'))
+				{
+					$('#workspace_panels').show();
+				}
+				if (data.output != '')
+				{
+					$('#no_stuff_here').hide();
+				}
+
+				if (recursively)
+				{
+					updateWorkspaceContentTimer = setTimeout(function() {
+						updateWorkspaceContent(true, wid, false);
+					}, 2000);
+				}
+			});
+		}
+   }
+
+   function getModalContacts()
+   {
+		$.ajax({
+			url: "/getContacts/",
+			method: 'POST',
+			dataType: 'json',
+			data: {}
+		}).done(function(data) {
+			$('#new_workspace_contacts').html('');
+			jQuery.each(data.result, function(key, value) {
+				$('#new_workspace_contacts').append('<a href="#" class="list-group-item nwc_item" data-clicked="0" data-name="' + key + '"><object><div style="float: left;">' + key + '</div><div style="float: right;"><i class="icon-ok" style="display: none;"></i></div><div style="clear: both;"></div></object></a>');
+			});
+		});
+   }
+</script>
+
+<script type="text/javascript">
+
+
+//TokBox Implementation
+  var session;
+  var sidebar2Shown = false;
+  function firstShowSidebar2(workspace_id) {
+      var apiKey    = "40606782";
+      var session_id = "1_MX40MDYwNjc4Mn5-U3VuIFNlcCAwOCAwMjo1NTozMCBQRFQgMjAxM34wLjg1NTE3NDF-";
+      var token = "T1==cGFydG5lcl9pZD00MDYwNjc4MiZzaWc9ZTFjYjE1MTEwZDlhMzQ4ZDk1M2ZjOGM4MTJjZWU5NmJjN2VjYTgzNDpub25jZT00MDI0MzQmY3JlYXRlX3RpbWU9MTM3ODYzNDI5OCZyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTFfTVg0ME1EWXdOamM0TW41LVUzVnVJRk5sY0NBd09DQXdNam8xTlRvek1DQlFSRlFnTWpBeE0zNHdMamcxTlRFM05ERi0=";
+    // $.ajax({
+    //   url: "/tokbox/",
+    //     method: 'POST',
+    //     data: {workspace_id: workspace_id.$oid}
+    // }).done(function(data) {
+    //   session_id = data.split(",")[0];
+    //   token = data.split(",")[1];
+    // });
+
+    var publisher;
+    var div = document.createElement("div");
+    $("#tokbox_container").append(div);
+    session = TB.initSession(session_id);
+  
+    session.addEventListener("sessionConnected", 
+                           sessionConnectedHandler);
+    session.addEventListener("streamCreated", 
+                             streamCreatedHandler);
+    publisher = TB.initPublisher(apiKey, div);
+    session.connect(apiKey, token);
+    sidebar2Shown = true;
+      function sessionConnectedHandler (event) {
+     session.publish( publisher );
+     subscribeToStreams(event.streams);
+  }
+  function subscribeToStreams(streams) {
+    for (var i = 0; i < streams.length; i++) {
+        var stream = streams[i];
+        if (stream.connection.connectionId 
+               != session.connection.connectionId) {
+            var div = document.createElement("div");
+            $("#tokbox_container").append(div);
+            session.subscribe(stream, div);
+        }
+    }
+  }
+  function streamCreatedHandler(event) {
+    subscribeToStreams(event.streams);
+  }
+
+  }
+  
+ 
+  
+
+</script>
+</html>

@@ -1,0 +1,542 @@
+/* Derek's CSS */
+/* Navigation Bar Style */
+/* -------------------------------------------------------- */
+body{
+    font-family: 'Lato', sans-serif;
+}
+li {
+	list-style: none;
+}
+
+.navigation-container{
+    
+    width: 100%;
+    height: 40px;
+    
+}
+
+.navigationbar{
+
+    background-color: #be9494;
+    
+}
+
+.nav-item{
+    font-weight:bold;
+    width: 100px;
+    height: 40px;
+}
+
+.nav-item:hover{
+    cursor:pointer;
+}
+
+.nav-center{
+    
+    left: auto;
+    right: auto;
+    margin: 0px auto;
+
+    
+}
+
+.nav-right{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+}
+
+/* Sidebar and Video Styles */
+/* -------------------------------------------------------- */
+
+.sidebar-container{
+    
+    background-color: rgb(248, 248, 248);
+    
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding:10px;
+    padding-top: 60px;
+    width: 300px;
+    height: 100%;
+    z-index: -1;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+video{
+    
+    margin: 0px 10px -5px 10px;
+}
+
+.video-container{
+    
+    margin-top: 10px;
+}
+
+.video-label{
+    
+    height: 20px;
+    width: 280px;
+    margin: 0px 10px;
+    padding-left: 10px;
+    
+    background-color: #bfb1b1;
+}
+
+
+.video-controls{
+
+margin: 0px 10px;
+padding: none;
+    
+    
+}
+
+/* Body and Content Styles */
+/* -------------------------------------------------------- */
+
+
+
+.body-container{
+
+    background-image:url('https://s3.amazonaws.com/Togethr.io/sos.png');
+    background-repeat:repeat;
+
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    padding-right: 300px;
+    
+}
+
+.body-header-container{
+    
+    float: top;
+    background-color: red;
+    height: 80px;
+    margin: 30px 30px 0px 30px;
+}
+
+.body-content-container{
+    
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    padding-top: 60px;
+    padding-right: 300px;
+    padding-left:10px;
+    overflow-y: scroll;
+   z-index: -10;
+}
+.content-module{
+
+    background-color: red;
+    float: top;
+    min-height: 100px;
+    margin: 30px 15px 0px 30px;
+    overflow: hidden;
+    
+}
+
+
+.content-image{
+    height: 100px;
+    width: 100px;
+    background-color: green;
+    float: left;
+    margin: 10px;
+    
+}
+
+.content-created{
+    float: right;
+    
+}
+
+
+
+/* Media Query Styles */
+/* -------------------------------------------------------- */
+
+
+
+@media (max-width: 800px) and (min-width: 410px) and (min-height: 300px){
+    
+    .sidebar-container{
+        
+        visibility: hidden;
+    }
+    
+    .body-container, video-controls{
+        padding-right: 0px;
+       
+        
+    }
+    
+    .body-content-container{
+        
+         padding-right: 0px;
+
+    }
+}
+
+@media (max-width: 410px) and (min-height: 300px){
+    
+    .body-container{
+        
+        visibility: hidden;
+    }
+    
+    .sidebar-container{
+        
+        right: 50px;
+    }
+}
+
+@media (max-height: 300px) {
+    
+    .body-container{
+        
+        visibility: hidden;
+    }
+    
+    .sidebar-container{
+        
+        width: 100%;
+        overflow: hidden;
+        
+    }
+    .video-container{
+        
+        float: left;
+        margin-bottom: 100px;
+    }
+    .video-controls{
+        
+        float: left;
+    }
+}
+
+
+/* Start CSS */
+
+#login_title{
+    font-weight:bold;
+    margin-left:10px;
+}
+
+#login_title_io{
+    color:rgb(217, 83, 79);    
+}
+
+body{
+    background-image:url('https://s3.amazonaws.com/Togethr.io/sos.png');
+    background-repeat:repeat;
+}
+
+.form-control{
+    
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+.form-signin-heading{
+    margin-bottom:30px;
+}
+
+.lead{
+    display:block;
+    margin-top:15px;
+}
+
+.footer{
+    padding-left:50px;
+}
+
+.navbar-default .navbar-brand{
+    font-weight:bold;
+    color:rgb(51, 51, 51);;
+}
+
+#username_navbar{
+    color:rgb(217, 83, 79);
+    font-weight:bold;
+}
+
+.panel-footer{
+    height:30px;
+    padding:0;
+}
+
+.info-stamp{
+    padding-top:5px;
+    padding-right:25px;
+    font-size:12px;
+
+}
+
+#create-workspace-btn{
+    display:block;
+    margin-left:0px;
+    margin-top:2px;
+    margin-bottom:20px;
+}
+
+#workspaces-div{
+    margin-top:5px;
+    min-height:35%;
+    max-height:35%;
+    margin-bottom:10px;
+}
+
+#contacts-div{
+    min-height:30%;
+    max-height:30%;
+}
+
+#search_box{
+    width:100%;   
+}
+
+#search_box_input{
+    border-radius: 15px;
+	width: 90%;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.fsearch_elem {
+	padding: 10px;
+}
+
+.fsearch_elem:hover {
+	cursor: pointer;
+	background: #efefef;
+}
+
+.icon-circle{
+    padding-top:4px;
+    font-size:13px;
+    color:#32d600;
+}
+
+#workspace_panels{
+    height:85%;
+}
+
+.list-group-item
+{
+    margin-top:3px;
+}
+
+.list-group-item.active, .list-group-item.active:hover {
+    background:rgb(238, 162, 54);
+    border-color: rgb(238, 162, 54);
+}
+
+.content-description{
+    font-size:16px;
+    padding-top:15px;
+    padding-right:40px;
+    padding-left:40px;
+}
+#find_contacts_results { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; width: 100%;
+position:absolute;z-index:1000;top:0;}
+#find_contacts_results { font-size: 1.2em; white-space: nowrap; overflow: hidden; }
+
+.list-group-item.active, .list-group-item.active:hover {
+    background:rgb(238, 162, 54);
+    border-color: rgb(238, 162, 54);
+}
+
+.content-description{
+    font-size:16px;
+    padding-top:15px;
+    padding-right:40px;
+    padding-left:40px;
+}
+
+#createWorkspace{
+    z-index:10000;
+}
+
+.nwc_item.clicked {
+	background: #f5f5f5;
+}
+
+.content-box {
+	border: 1px solid #ccc;
+	border-radius: 7px;
+	background: #fff;
+	margin-bottom: 15px;
+}
+
+.content-box-inner {
+	padding: 15px;
+}
+
+.content-box-lower {
+	background: #e5e5e5;
+	padding: 10px;
+	font-size: 0.8em;
+	text-align: right;
+}
+
+.workspaces-list-item.clicked, .workspaces-list-item.clicked:active, .workspaces-list-item.clicked:focus, .workspaces-list-item.clicked:hover {
+	background: #F0AD4E;
+	color: #fff;
+	font-weight: bold;
+}
+
+#workspace_panels {
+	padding-top: 4%;
+	padding-left: 10%;
+	padding-right: 10%;
+	padding-bottom: 0;
+    max-height:80%;
+    overflow-y:scroll;
+    margin-bottom:15px;
+}
+
+#submit_content_div {
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+#submit_content_div textarea {
+	resize: none;
+}
+
+#sidebar2{
+}
+
+.invisible{
+    visibility: hidden;
+    height:0px;
+}
+
+#workspaces_view_btn{
+    margin-bottom:10px;
+}
+
+#workspaces-new-invites .invite_box {
+	border-radius: 7px;
+	background: #5CB85C;
+	box-shadow: 0px 0px 7px #bbb;
+	margin-bottom: 15px;
+	padding: 15px;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+	width: 600px;
+}
+
+#workspaces-new-invites .invite_box:hover {
+	background: #4CAE4C;
+}
+
+.display_none{
+    display:none;
+}
+
+#tokbox_container{
+    overflow-y:auto;
+}
+
+/*Derek New */ 
+
+/* Navigation Bar Style */
+/* -------------------------------------------------------- */
+
+.navigation-container{
+    
+    width: 100%;
+    height: 40px;
+
+    
+}
+
+.navigationbar{
+
+    background-color: #EBEBEB;
+    z-index: 10;
+}
+
+.nav-footer{
+    
+    height: 10px;
+    width: 100%;
+    background-color: #FFD568;
+    z-index: 100;
+}
+
+.nav-footer-left{
+    
+    width: 50%;
+    height: 10px;
+    background-color: #FF7F76;
+    float: left;
+}
+
+
+.nav-item{
+    
+    height: 40px;
+    z-index: 15;
+    
+}
+
+.nav-center{
+    
+    left: auto;
+    right: auto;
+    margin: 0px auto 0px auto;
+
+    font-weight: 500;
+    font-size: 28px;
+    width: 100px;
+
+    
+}
+
+.font100{
+    color:rgb(217, 83, 79);;
+    font-weight: 500;
+}
+
+.nav-logout{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100px;
+    padding-top: 10px;
+    padding-left: 30px;
+    border-left: 1px solid #C0C0C0;
+
+}
+
+.nav-name{
+    
+    position: absolute;
+    top: 0px;
+    right: 100px;
+    padding-top: 10px;
+    padding-right: 20px;
+    font-weight: 300;
+
+}
+
+.nav-logout:hover{
+    background-color: hsla(0, 0%, 89%, 0.46);
+    cursor:pointer;
+
+}
