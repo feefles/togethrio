@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, request, session, jsonify
 import time, re, datetime
 from bson.json_util import dumps
 from bson import ObjectId
-import OpenTokSDK
+from opentok import OpenTok
 
 @app.route("/createWorkspace/", methods= ['POST'])
 def createWorkspace():
@@ -12,7 +12,7 @@ def createWorkspace():
 	#OpenTok 
 	api_key = "40606782"
 	api_secret = "f8650fd90d4ad2500f15c0bd6d725d06c643b63b"
-	OTSDK = OpenTokSDK.OpenTokSDK(api_key,api_secret)
+	OTSDK = OpenTok(api_key,api_secret)
 	
 	session_id = OTSDK.create_session().session_id
 	users = request.form['users'].split(",");

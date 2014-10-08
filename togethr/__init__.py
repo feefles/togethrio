@@ -1,7 +1,7 @@
 from flask import Flask
 
 app = Flask(__name__)
-from pymongo import PyMongo
+from pymongo import MongoClient
 # app.config['MONGO_DBNAME'] = 'togethrdb'
 # mongo = PyMongo(app)
 
